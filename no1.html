@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TA Room Assistance Tracker</title>
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .entry-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .summary {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>TA Room Assistance Tracker</h2>
+    <div class="entry-form">
+      <input type="text" id="entryInput" placeholder="Enter directory ID, description, and duration">
+      <button onclick="addEntry()">Add Entry</button>
+      <button onclick="summary()">Summary</button>
+    </div>
+    <div id="entries"></div>
+    <div class="summary" id="summary"></div>
+  </div>
+
+  <script>
+    let entryList = [];
+
+    function addEntry() {
+      const entryInput = document.getElementById("entryInput").value.trim();
+
+      if (entryInput === "") {
+        alert("Invalid entry");
+        return;
+      }
+
+      const entryValues = entryInput.split(" ");
+
+      if (entryValues.length !== 3) {
+        alert("Invalid entry");
+        return;
+      }
+
+      const [directoryId, description, duration] = entryValues;
+      const entry = { directoryId, description, duration };
+      entryList.push(entry);
+
+      document.getElementById("entryInput").value = "";
+      updateEntries();
+    }
+
+    function updateEntries() {
+      const entriesDiv = document.getElementById("entries");
+      entriesDiv.innerHTML = "";
+
+      entryList.forEach((entry, index) => {
+        const entryText = `${entry.directoryId}, ${entry.description}, ${entry.duration}`;
+        const entryDiv = document.createElement("div");
+        entryDiv.textContent = entryText;
+        entriesDiv.appendChild(entryDiv);
+      });
+    }
+
+    function summary() {
+      const summaryDiv = document.getElementById("summary");
+      summaryDiv.innerHTML = "";
+
+      const summaryText = `Number of entries: ${entryList.length}`;
+      const sortedEntries = entryList.sort((a, b) => a.duration - b.duration);
+
+      const summaryEntries = document.createElement("div");
+      summaryEntries.textContent = sortedEntries.map(entry => `${entry.directoryId} ${entry.description} ${entry.duration}`).join(" ");
+
+      summaryDiv.appendChild(document.createTextNode(summaryText));
+      summaryDiv.appendChild(summaryEntries);
+    }
+  </script>
+</body>
+</html>
